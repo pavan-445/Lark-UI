@@ -1,0 +1,553 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lark: UI Mock-up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Figtree:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#EFF3EE;
+    --surface:#FBFCFA;
+    --surface-2:#F2F6F1;
+    --ink:#16302A;          /* deep spruce field-guide ink */
+    --ink-mid:#4C6259;
+    --ink-low:#879B92;
+    --line:#DBE4DC;
+    --teal:#0E9DAE;         /* the high register, brand */
+    --teal-deep:#0B6E79;    /* accessible action */
+    --teal-soft:#E1F2F2;
+    --amber:#D9921F;        /* low, intact frequencies / warmth */
+    --lilac:#8E6FD6;        /* the very top, fading */
+    --coral:#E0703F;        /* protect / caution, never alarmist */
+    --danger:#D9533B;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    font-family:"Figtree",system-ui,sans-serif;color:var(--ink);
+    background:
+      radial-gradient(900px 500px at 12% -6%, #E6F0EE 0%, transparent 60%),
+      radial-gradient(800px 600px at 108% 4%, #F6F0E4 0%, transparent 55%),
+      var(--bg);
+    min-height:100vh;padding:34px 20px 60px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto}
+  .masthead{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:4px}
+  .logo{font-family:"Spectral",serif;font-weight:600;font-size:30px;letter-spacing:.2px;
+        display:inline-flex;align-items:center;gap:9px;color:var(--ink)}
+  .logo svg{width:26px;height:26px}
+  .masthead p{margin:5px 0 0;color:var(--ink-mid);font-size:14.5px;max-width:540px;line-height:1.55}
+  .deck{font-family:"Spectral",serif;font-style:italic;color:var(--teal-deep);font-size:15.5px}
+
+  .stage{display:grid;grid-template-columns:392px 1fr;gap:40px;align-items:start;margin-top:26px}
+  @media (max-width:880px){.stage{grid-template-columns:1fr;justify-items:center}}
+
+  /* ---------- phone ---------- */
+  .phone{width:392px;height:812px;border-radius:46px;position:relative;flex:none;
+    background:linear-gradient(160deg,#1f4138,#0f2620);padding:13px;
+    box-shadow:0 40px 80px -28px rgba(20,48,42,.55), 0 0 0 1px rgba(255,255,255,.05) inset}
+  .screen{position:absolute;inset:13px;border-radius:36px;overflow:hidden;
+    background:linear-gradient(180deg,var(--surface),var(--surface-2));display:flex;flex-direction:column}
+  .notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);
+    width:118px;height:25px;background:#0f2620;border-radius:0 0 15px 15px;z-index:40}
+
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 2px;
+    font-family:"Spline Sans Mono",monospace;font-size:11.5px;color:var(--ink-mid)}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 8px}
+  .topbar .logo{font-size:20px}
+  .mic{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);
+    color:var(--ink-mid);font-family:"Spline Sans Mono",monospace;font-size:10.5px;font-weight:500;
+    padding:6px 10px;border-radius:999px;cursor:pointer}
+  .mic .led{width:7px;height:7px;border-radius:50%;background:var(--ink-low)}
+  .mic.on{color:var(--teal-deep);border-color:var(--teal)}
+  .mic.on .led{background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.35}}
+
+  .body{flex:1;overflow-y:auto;padding:6px 18px 96px;scrollbar-width:none}
+  .body::-webkit-scrollbar{display:none}
+  .view{display:none;animation:fade .35s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2.title{font-family:"Spectral",serif;font-weight:600;font-size:26px;margin:8px 2px 3px}
+  .sub{color:var(--ink-low);font-size:13.5px;margin:0 2px 16px;line-height:1.45}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;
+    box-shadow:0 2px 0 rgba(22,48,42,.02)}
+  .eyebrow{font-family:"Spline Sans Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-low);font-weight:500;margin-bottom:8px}
+
+  /* ---- sound horizon (audiogram), the signature ---- */
+  .horizon{padding:14px 12px 8px}
+  .hz-read{font-family:"Spectral",serif;font-size:15.5px;line-height:1.5;color:var(--ink);margin:8px 4px 2px}
+  .hz-read b{color:var(--teal-deep)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin:10px 4px 2px;font-size:11px;color:var(--ink-mid)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%}
+
+  .pill-row{display:flex;gap:10px;margin-bottom:14px}
+  .stat{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 14px}
+  .stat .k{font-family:"Spline Sans Mono",monospace;font-size:22px;font-weight:600;color:var(--ink)}
+  .stat .l{font-size:11.5px;color:var(--ink-low);margin-top:2px}
+  .stat .k.warn{color:var(--coral)}
+  .stat .k.good{color:var(--teal-deep)}
+
+  .btn{width:100%;border:0;cursor:pointer;font-family:inherit;font-weight:600;font-size:15px;
+    background:var(--teal-deep);color:#fff;border-radius:15px;padding:14px;display:flex;align-items:center;
+    justify-content:center;gap:9px;box-shadow:0 10px 22px -12px rgba(11,110,121,.8)}
+  .btn svg{width:18px;height:18px}
+  .btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+
+  .note{display:flex;gap:9px;align-items:flex-start;color:var(--ink-mid);font-size:12px;
+    padding:11px 13px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;line-height:1.5}
+  .note svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--teal-deep)}
+
+  /* ---- clarity ---- */
+  .caption{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+  .caption .who{font-size:11px;color:var(--ink-low);margin-bottom:7px;font-weight:600}
+  .caption p{margin:0;font-size:18px;line-height:1.55;font-family:"Spectral",serif}
+  .hi{color:var(--teal);font-weight:600;font-style:normal;background:var(--teal-soft);border-radius:5px;padding:0 3px}
+  .boosttag{display:inline-block;margin-top:10px;font-family:"Spline Sans Mono",monospace;font-size:10px;
+    color:var(--teal-deep);border:1px solid var(--teal);border-radius:999px;padding:3px 9px}
+
+  .toggle-card{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .toggle-card .meta{font-weight:600;font-size:14px}
+  .toggle-card .meta small{display:block;color:var(--ink-low);font-weight:400;font-size:11.5px;margin-top:2px}
+  .switch{width:46px;height:27px;border-radius:999px;background:var(--line);position:relative;border:0;cursor:pointer;flex:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;
+    transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .switch.on{background:var(--teal)}
+  .switch.on::after{left:22px}
+
+  .eq{display:flex;align-items:flex-end;gap:5px;height:54px;margin-top:12px;padding:0 2px}
+  .eq i{flex:1;background:var(--line);border-radius:4px 4px 0 0;transition:.4s;display:block}
+  .eq.boost i:nth-child(n+5){background:linear-gradient(180deg,var(--lilac),var(--teal))}
+  .eqlabels{display:flex;justify-content:space-between;font-family:"Spline Sans Mono",monospace;
+    font-size:9px;color:var(--ink-low);margin-top:5px}
+
+  .pairs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .pair{font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);
+    color:var(--ink);padding:9px 14px;border-radius:12px;cursor:pointer}
+  .pair.right{border-color:var(--teal);background:var(--teal-soft);color:var(--teal-deep)}
+
+  /* ---- train ---- */
+  .trainwrap{text-align:center;padding:18px 16px 20px}
+  .wave{height:42px;display:flex;align-items:center;justify-content:center;gap:4px;margin:6px 0 16px}
+  .wave i{width:4px;background:var(--teal);border-radius:4px;animation:wv 1.1s ease-in-out infinite}
+  @keyframes wv{0%,100%{height:8px}50%{height:34px}}
+  .ask{font-family:"Spectral",serif;font-size:21px;margin:0 0 16px}
+  .choices{display:flex;gap:12px}
+  .choice{flex:1;font-family:"Spectral",serif;font-size:28px;font-weight:600;border:1.5px solid var(--line);
+    background:var(--surface);color:var(--ink);border-radius:18px;padding:18px 0;cursor:pointer;transition:.15s}
+  .choice:hover{border-color:var(--teal)}
+  .choice.correct{border-color:var(--teal);background:var(--teal-soft);color:var(--teal-deep)}
+  .choice.wrong{border-color:var(--coral);background:#fbeee7;color:var(--coral)}
+  .progress-arc{display:flex;align-items:center;gap:14px;margin-top:2px}
+  .arc-num{font-family:"Spline Sans Mono",monospace;font-size:26px;font-weight:600}
+  .trend{font-size:12px;color:var(--teal-deep);font-weight:600}
+  .minichart{flex:1;height:38px;display:flex;align-items:flex-end;gap:3px}
+  .minichart i{flex:1;background:var(--teal-soft);border-radius:3px 3px 0 0}
+  .minichart i.h{background:var(--teal)}
+
+  /* ---- protect ---- */
+  .gauge-wrap{display:flex;align-items:center;gap:16px}
+  .gauge{width:120px;height:120px;flex:none}
+  .gauge .val{font-family:"Spline Sans Mono",monospace;font-weight:600;font-size:24px;fill:var(--ink)}
+  .gauge .cap{font-size:8.5px;fill:var(--ink-low);font-family:"Figtree",sans-serif}
+  .meter{display:flex;align-items:center;gap:10px;margin:4px 0}
+  .meter .lvl{font-family:"Spline Sans Mono",monospace;font-size:30px;font-weight:600}
+  .bar{height:9px;border-radius:999px;background:var(--line);overflow:hidden;flex:1}
+  .bar i{display:block;height:100%;border-radius:999px}
+  .streak{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px}
+  .streak svg{width:20px;height:20px;color:var(--coral)}
+
+  /* ---- catch ---- */
+  .catch-item{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .catch-item:last-child{border-bottom:0}
+  .cicon{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;position:relative}
+  .cicon svg{width:22px;height:22px}
+  .cicon.urgent{background:#fbe9e3;color:var(--danger)}
+  .cicon.norm{background:var(--surface-2);color:var(--ink-mid)}
+  .cicon.joy{background:var(--teal-soft);color:var(--teal-deep)}
+  .cicon .ripple{position:absolute;inset:0;border-radius:13px;border:2px solid currentColor;opacity:0;animation:rip 2.4s ease-out infinite}
+  @keyframes rip{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.55);opacity:0}}
+  .ctxt .t{font-weight:600;font-size:14px}
+  .ctxt .m{font-size:11.5px;color:var(--ink-low);margin-top:1px}
+  .ctime{margin-left:auto;font-family:"Spline Sans Mono",monospace;font-size:10.5px;color:var(--ink-low);flex:none}
+
+  /* bottom nav */
+  .nav{position:absolute;left:13px;right:13px;bottom:13px;height:74px;display:flex;
+    background:rgba(251,252,250,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+    border-radius:0 0 36px 36px;padding:8px 2px 14px}
+  .nav button{flex:1;background:none;border:0;cursor:pointer;color:var(--ink-low);font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:600}
+  .nav button svg{width:22px;height:22px}
+  .nav button.on{color:var(--teal-deep)}
+
+  /* design notes */
+  .notes{align-self:start;max-width:560px}
+  @media (max-width:880px){.notes{max-width:392px}}
+  .notes .eb{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal-deep);font-weight:600;margin-bottom:8px}
+  .notes h3{font-family:"Spectral",serif;font-weight:600;font-size:24px;margin:0 0 6px;min-height:30px}
+  .notes .lead{color:var(--ink-mid);font-size:15px;line-height:1.6;margin:0 0 18px}
+  .notes ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+  .notes li{display:flex;gap:11px;font-size:13.5px;color:var(--ink-mid);line-height:1.5;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+  .notes li b{color:var(--ink);font-weight:600}
+  .notes li .k{width:24px;height:24px;flex:none;border-radius:7px;display:grid;place-items:center;background:var(--teal-soft)}
+  .notes li .k svg{width:15px;height:15px;color:var(--teal-deep)}
+  .jumprow{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .jumprow button{font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink-mid);padding:8px 13px;border-radius:999px}
+  .jumprow button.on{border-color:var(--teal);color:var(--teal-deep);background:var(--teal-soft)}
+
+  :focus-visible{outline:2.5px solid var(--teal);outline-offset:2px;border-radius:8px}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+
+<!-- lark glyph + gradients -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="spectrum" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0%" stop-color="#D9921F"/><stop offset="45%" stop-color="#0E9DAE"/><stop offset="100%" stop-color="#8E6FD6"/>
+  </linearGradient>
+  <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="40%" stop-color="#fff" stop-opacity="0"/><stop offset="100%" stop-color="#F2F6F1" stop-opacity=".85"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="wrap">
+  <div class="masthead">
+    <span class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c4 0 6-2 8-5 1.6-2.4 4-4 7-4-1 2-1 3.5-3 4.5 1.5.3 2.5 0 4-1-.5 3.5-3.5 6.5-8 6.5-3 0-5 .8-6 2"/><path d="M14 8.5h.01"/><path d="M16 19c1.5-1 3-1.4 5-1.2M15 21c1-.7 2.2-1 3.6-.9"/></svg>
+      Lark
+    </span>
+    <p><span class="deck">Bring the top of the sound back, and protect what you still have.</span><br>
+       High-fidelity mock-up · a daily companion for high-frequency hearing loss. Every tab and control is live. Try them.</p>
+  </div>
+
+  <div class="stage">
+    <!-- ============ PHONE ============ -->
+    <div class="phone" role="img" aria-label="Lark mobile app prototype">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="statusbar"><span>9:41</span><span>◓ ⌁ ▮▮▮</span></div>
+        <div class="topbar">
+          <span class="logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c4 0 6-2 8-5 1.6-2.4 4-4 7-4-1 2-1 3.5-3 4.5 1.5.3 2.5 0 4-1-.5 3.5-3.5 6.5-8 6.5-3 0-5 .8-6 2"/><path d="M14 8.5h.01"/></svg>
+            Lark
+          </span>
+          <button class="mic" id="micBtn" onclick="toggleMic()"><span class="led"></span><span id="micTxt">mic off</span></button>
+        </div>
+
+        <div class="body">
+          <!-- ---------- YOUR HEARING ---------- -->
+          <section class="view active" id="view-hearing">
+            <h2 class="title">Your hearing</h2>
+            <p class="sub">The high notes you can't feel slipping, made visible.</p>
+
+            <div class="card horizon">
+              <div class="eyebrow">Your sound horizon · right ear</div>
+              <svg viewBox="0 0 340 210" width="100%" aria-label="Audiogram showing high-frequency sloping loss">
+                <!-- normal zone -->
+                <rect x="34" y="16" width="296" height="38" fill="#0E9DAE" opacity=".07"/>
+                <!-- grid -->
+                <g stroke="#E4ECE4" stroke-width="1">
+                  <line x1="34" y1="16" x2="330" y2="16"/><line x1="34" y1="73" x2="330" y2="73"/>
+                  <line x1="34" y1="130" x2="330" y2="130"/><line x1="34" y1="186" x2="330" y2="186"/>
+                  <line x1="34" y1="16" x2="34" y2="186"/><line x1="93" y1="16" x2="93" y2="186"/>
+                  <line x1="152" y1="16" x2="152" y2="186"/><line x1="212" y1="16" x2="212" y2="186"/>
+                  <line x1="271" y1="16" x2="271" y2="186"/><line x1="330" y1="16" x2="330" y2="186"/>
+                </g>
+                <!-- your clarity edge -->
+                <line x1="212" y1="16" x2="212" y2="186" stroke="var(--coral)" stroke-width="1.4" stroke-dasharray="4 4"/>
+                <text x="216" y="28" font-family="Spline Sans Mono" font-size="8.5" fill="#E0703F">clarity edge</text>
+                <!-- threshold curve (ski-slope) -->
+                <polyline points="34,35 93,35 152,44 212,73 271,120 330,149" fill="none"
+                  stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <g fill="var(--surface)" stroke="var(--ink)" stroke-width="2">
+                  <circle cx="34" cy="35" r="4"/><circle cx="93" cy="35" r="4"/><circle cx="152" cy="44" r="4"/>
+                  <circle cx="212" cy="73" r="4"/><circle cx="271" cy="120" r="4"/><circle cx="330" cy="149" r="4"/>
+                </g>
+                <!-- fading sounds living in the loss zone -->
+                <g font-family="Figtree" font-weight="600">
+                  <text x="178" y="64" font-size="13" fill="var(--ink-mid)">sh</text>
+                  <text x="246" y="100" font-size="13" fill="var(--lilac)" opacity=".6">f·th</text>
+                  <text x="300" y="118" font-size="13" fill="var(--lilac)" opacity=".5">s</text>
+                </g>
+                <text x="284" y="86" font-size="13" opacity=".55">🐦</text>
+                <text x="232" y="58" font-size="12" opacity=".7">🔔</text>
+                <!-- fade overlay over high band -->
+                <rect x="212" y="16" width="118" height="170" fill="url(#fade)"/>
+                <!-- axis labels -->
+                <g font-family="Spline Sans Mono" font-size="8.5" fill="var(--ink-low)" text-anchor="middle">
+                  <text x="34" y="200">250</text><text x="93" y="200">500</text><text x="152" y="200">1k</text>
+                  <text x="212" y="200">2k</text><text x="271" y="200">4k</text><text x="330" y="200">8k</text>
+                </g>
+                <g font-family="Spline Sans Mono" font-size="8" fill="var(--ink-low)" text-anchor="end">
+                  <text x="30" y="19">0</text><text x="30" y="76">30</text><text x="30" y="133">60</text><text x="30" y="189">90 dB</text>
+                </g>
+              </svg>
+              <p class="hz-read">Strong up to <b>~2 kHz</b>, then it slopes. That's the band that carries <b>s, f, th, sh</b>, and birdsong.</p>
+              <div class="legend">
+                <span><span class="dot" style="background:var(--ink)"></span>your hearing</span>
+                <span><span class="dot" style="background:#0E9DAE;opacity:.4"></span>typical range</span>
+                <span><span class="dot" style="background:var(--lilac);opacity:.6"></span>sounds slipping away</span>
+              </div>
+            </div>
+
+            <div class="pill-row">
+              <div class="stat"><div class="k good">Low effort</div><div class="l">today's listening</div></div>
+              <div class="stat"><div class="k warn">62%</div><div class="l">of safe sound used</div></div>
+            </div>
+
+            <button class="btn ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Take a 2-minute hearing check</button>
+            <div class="note" style="margin-top:12px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+              A check is for awareness, not diagnosis. For the real picture, ask an audiologist for an <b style="color:var(--ink-mid)">extended high-frequency</b> and speech-in-noise test.
+            </div>
+          </section>
+
+          <!-- ---------- CLARITY ---------- -->
+          <section class="view" id="view-clarity">
+            <h2 class="title">Clarity</h2>
+            <p class="sub">Live captions that bring the missing consonants back.</p>
+
+            <div class="caption">
+              <div class="who">Across the table · live</div>
+              <p>"Can you pa<span class="hi">ss</span> the <span class="hi">s</span>alt, it'<span class="hi">s</span> by the di<span class="hi">sh</span>."</p>
+              <span class="boosttag">high-frequency sounds lifted</span>
+            </div>
+
+            <div class="card" style="margin-top:14px">
+              <div class="toggle-card">
+                <div class="meta">Clarity boost<small>Lifts s · f · th · sh into a range you hear</small></div>
+                <button class="switch on" id="boostSw" onclick="toggleBoost(this)"></button>
+              </div>
+              <div class="eq boost" id="eq"><i style="height:30%"></i><i style="height:42%"></i><i style="height:38%"></i><i style="height:46%"></i><i style="height:70%"></i><i style="height:88%"></i><i style="height:80%"></i><i style="height:92%"></i></div>
+              <div class="eqlabels"><span>250</span><span>1k</span><span>2k</span><span>4k</span><span>8k</span></div>
+            </div>
+
+            <div class="card">
+              <div class="eyebrow">Sounds alike?</div>
+              <div class="meta" style="font-weight:600;font-size:13.5px;margin-bottom:8px">Heard "sip"? They may have said:</div>
+              <div class="pairs">
+                <button class="pair right">sip</button><button class="pair">ship</button>
+                <button class="pair">sit</button><button class="pair">zip</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="toggle-card">
+                <div class="meta">Noisy room mode<small>Locks onto the person in front of you</small></div>
+                <button class="switch" id="noiseSw" onclick="this.classList.toggle('on')"></button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------- TRAIN ---------- -->
+          <section class="view" id="view-train">
+            <h2 class="title">Train</h2>
+            <p class="sub">Teach your ears the sounds that blur together.</p>
+
+            <div class="card trainwrap">
+              <div class="eyebrow" style="margin-bottom:0">Round 4 of 8</div>
+              <div class="wave"><i style="animation-delay:0s"></i><i style="animation-delay:.15s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.45s"></i><i style="animation-delay:.6s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.15s"></i></div>
+              <p class="ask">Which did you hear?</p>
+              <div class="choices">
+                <button class="choice" onclick="answer(this,true)">S</button>
+                <button class="choice" onclick="answer(this,false)">F</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="eyebrow">Listening effort over time</div>
+              <div class="progress-arc">
+                <div><div class="arc-num">−18%</div><div class="trend">easier than last month</div></div>
+                <div class="minichart"><i style="height:90%"></i><i style="height:84%"></i><i style="height:78%"></i><i style="height:70%"></i><i style="height:66%"></i><i class="h" style="height:58%"></i></div>
+              </div>
+            </div>
+            <div class="note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg>
+              Training helps your brain fill the gaps with less effort, so conversations leave you less drained.
+            </div>
+          </section>
+
+          <!-- ---------- PROTECT ---------- -->
+          <section class="view" id="view-protect">
+            <h2 class="title">Protect</h2>
+            <p class="sub">This kind of loss is permanent. Keep every decibel you have.</p>
+
+            <div class="card">
+              <div class="gauge-wrap">
+                <svg class="gauge" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--line)" stroke-width="11"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--coral)" stroke-width="11" stroke-linecap="round"
+                    stroke-dasharray="314" stroke-dashoffset="119" transform="rotate(-90 60 60)"/>
+                  <text class="val" x="60" y="58" text-anchor="middle">62%</text>
+                  <text class="cap" x="60" y="74" text-anchor="middle">of safe sound</text>
+                </svg>
+                <div>
+                  <div style="font-weight:600;font-size:15px;margin-bottom:4px">Today's sound budget</div>
+                  <div style="color:var(--ink-mid);font-size:13px;line-height:1.5">About <b>2h 10m</b> of safe listening left at your current levels.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="eyebrow">Right now · your headphones</div>
+              <div class="meter"><span class="lvl" style="color:var(--coral)">94<span style="font-size:14px"> dB</span></span>
+                <div class="bar"><i style="width:82%;background:linear-gradient(90deg,var(--teal),var(--coral))"></i></div></div>
+              <div style="font-size:12.5px;color:var(--ink-mid);line-height:1.5">That's loud, about <b>30 minutes</b> before today's limit. Drop to 60% volume and it's safe for hours.</div>
+              <button class="btn" style="margin-top:13px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M11 5 6 9H2v6h4l5 4Z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>Lower to a safe level</button>
+            </div>
+
+            <div class="card" style="display:flex;align-items:center;justify-content:space-between">
+              <div class="streak"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4 6 5 6 11a6 6 0 0 1-12 0c0-2 1-3 2-4 .5 1.5 1.5 2 2 3 .8-1.4.3-3 .5-5 .8 1 1.5 1.4 2 .5 0-3-1-5-1-6Z"/></svg>9-day protected streak</div>
+              <span style="font-family:'Spline Sans Mono';font-size:11px;color:var(--ink-low)">60 / 60 rule</span>
+            </div>
+          </section>
+
+          <!-- ---------- CATCH ---------- -->
+          <section class="view" id="view-catch">
+            <h2 class="title">Catch</h2>
+            <p class="sub">The high sounds your ears skip, seen and felt instead.</p>
+
+            <div class="card">
+              <div class="catch-item">
+                <div class="cicon urgent"><span class="ripple"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a6 6 0 0 0-6 6c0 5-2 6-2 6h16s-2-1-2-6a6 6 0 0 0-6-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div>
+                <div class="ctxt"><div class="t">Smoke alarm, kitchen</div><div class="m">Buzzing now · tap to dismiss</div></div>
+                <span class="ctime">now</span>
+              </div>
+              <div class="catch-item">
+                <div class="cicon norm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h4v4H7zM15 9h2M15 13h2"/></svg></div>
+                <div class="ctxt"><div class="t">Microwave finished</div><div class="m">High beep · 3 times</div></div>
+                <span class="ctime">2m</span>
+              </div>
+              <div class="catch-item">
+                <div class="cicon norm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a6 6 0 0 0-6 6c0 5-2 6-2 6h16s-2-1-2-6a6 6 0 0 0-6-6ZM2 9a4 4 0 0 1 1.5-3M22 9a4 4 0 0 0-1.5-3"/></svg></div>
+                <div class="ctxt"><div class="t">Someone said "Maya"</div><div class="m">Behind you, ~2m</div></div>
+                <span class="ctime">8m</span>
+              </div>
+              <div class="catch-item">
+                <div class="cicon joy"><span class="ripple"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c4 0 6-2 8-5 1.6-2.4 4-4 7-4-1 2-1 3.5-3 4.5 1.5.3 2.5 0 4-1-.5 3.5-3.5 6.5-8 6.5-3 0-5 .8-6 2"/></svg></div>
+                <div class="ctxt"><div class="t">A lark is singing nearby</div><div class="m">High notes you used to miss · 5–7 kHz</div></div>
+                <span class="ctime">just now</span>
+              </div>
+            </div>
+
+            <div class="note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              Listening happens entirely on your phone. Nothing is recorded, stored, or sent anywhere.
+            </div>
+          </section>
+        </div>
+
+        <!-- bottom nav -->
+        <nav class="nav" aria-label="Main">
+          <button class="on" data-v="hearing" onclick="go('hearing',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 9 8l4 5 3-4 5 8"/><circle cx="9" cy="8" r="0"/></svg>Hearing</button>
+          <button data-v="clarity" onclick="go('clarity',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-7 5 14 3-7h3"/></svg>Clarity</button>
+          <button data-v="train" onclick="go('train',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg>Train</button>
+          <button data-v="protect" onclick="go('protect',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6Z"/></svg>Protect</button>
+          <button data-v="catch" onclick="go('catch',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c4 0 6-2 8-5 1.6-2.4 4-4 7-4-1 2-1 3.5-3 4.5 1.5.3 2.5 0 4-1-.5 3.5-3.5 6.5-8 6.5-3 0-5 .8-6 2"/><path d="M14 8.5h.01"/></svg>Catch</button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ============ DESIGN NOTES ============ -->
+    <aside class="notes">
+      <div class="eb" id="n-eb">Screen 1 of 5 · Home</div>
+      <h3 id="n-title">Your hearing: make the invisible visible</h3>
+      <p class="lead" id="n-lead">High-frequency loss hides because the loud vowels survive, so people don't notice for years. The home screen's whole job is to let you finally see it: your audiogram reimagined as a horizon, with the consonants and birdsong plotted where they slip away.</p>
+      <ul id="n-list"></ul>
+      <div class="jumprow">
+        <button class="on" onclick="go('hearing',document.querySelector('[data-v=hearing]'))">Hearing</button>
+        <button onclick="go('clarity',document.querySelector('[data-v=clarity]'))">Clarity</button>
+        <button onclick="go('train',document.querySelector('[data-v=train]'))">Train</button>
+        <button onclick="go('protect',document.querySelector('[data-v=protect]'))">Protect</button>
+        <button onclick="go('catch',document.querySelector('[data-v=catch]'))">Catch</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  const I={
+    eye:'<path d="M3 17 9 8l4 5 3-4 5 8"/>',
+    edge:'<path d="M12 3v18M5 8l7-5 7 5"/>',
+    wave:'<path d="M3 12h3l3-7 5 14 3-7h3"/>',
+    boost:'<path d="M4 14v-4M9 18V6M14 16V8M19 13v-2"/>',
+    brain:'<path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/>',
+    shield:'<path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6Z"/>',
+    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    bird:'<path d="M3 15c4 0 6-2 8-5 1.6-2.4 4-4 7-4-1 2-1 3.5-3 4.5 1.5.3 2.5 0 4-1-.5 3.5-3.5 6.5-8 6.5-3 0-5 .8-6 2"/>',
+    bell:'<path d="M12 3a6 6 0 0 0-6 6c0 5-2 6-2 6h16s-2-1-2-6a6 6 0 0 0-6-6Z"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>'
+  };
+  const NOTES={
+    hearing:{eb:"Screen 1 of 5 · Home",t:"Your hearing: make the invisible visible",
+      lead:"High-frequency loss hides because the loud vowels survive, so people don't notice for years. The home screen's whole job is to let you finally see it: your audiogram reimagined as a horizon, with the consonants and birdsong plotted where they slip away.",
+      items:[["eye","<b>See what you can't feel.</b> A ski-slope curve plus a 'clarity edge' line shows exactly where understanding starts to fall off."],
+             ["wave","<b>Awareness, not diagnosis.</b> The self-check is framed honestly and always points to a real audiologist and the right tests."],
+             ["shield","<b>Two numbers that matter daily:</b> how hard you're working to listen, and how much safe sound you've used."]]},
+    clarity:{eb:"Screen 2 of 5 · Live assist",t:"Clarity: understand, not just hear",
+      lead:"The everyday hero. Because the lost sounds are the meaning-carrying consonants (s, f, th, sh), captions highlight exactly those, and a 'clarity boost' lifts the high band, the same idea as the frequency-lowering tech in modern hearing aids, made visible.",
+      items:[["wave","<b>Consonant-aware captions.</b> The sounds you lose are the ones emphasised, not just transcribed."],
+             ["boost","<b>Clarity boost.</b> The EQ shows the high frequencies being lifted into a range you can still hear."],
+             ["eye","<b>Minimal-pairs helper.</b> 'sip / ship / sit', the app untangles the words that collapse into each other."]]},
+    train:{eb:"Screen 3 of 5 · Practice",t:"Train: rebuild discrimination",
+      lead:"Short daily exercises teach the brain to tell apart the consonant pairs that blur (s/f, th/s, sh/s). Listening training is shown by evidence to lower the cognitive effort of understanding speech over time.",
+      items:[["brain","<b>Effort trending down.</b> Progress is measured as listening fatigue dropping, the thing that actually drains your day."],
+             ["wave","<b>Tiny, calm sessions.</b> Two-choice trials, no pressure, built to fit between other things."],
+             ["eye","<b>Visual feedback.</b> Right and wrong are shown, never only sounded."]]},
+    protect:{eb:"Screen 4 of 5 · Prevention",t:"Protect: keep what you have",
+      lead:"The heart of the product. This loss is permanent, so the most valuable habit is protecting the hearing that remains. A live sound-dose meter turns a scary fact into a simple daily budget you can win.",
+      items:[["shield","<b>A safe-sound budget.</b> Your day's noise becomes one number, and a streak you can keep."],
+             ["boost","<b>Live headphone warnings.</b> It flags unsafe volume and shows how much time you have left before damage."],
+             ["clock","<b>The 60/60 rule, coached.</b> 60% volume, 60 minutes, then a break, turned into a habit, not a lecture."]]},
+    catch:{eb:"Screen 5 of 5 · Awareness",t:"Catch: never miss the high sounds",
+      lead:"The high-pitched sounds your hearing skips first, like alarms, beeps, your name, and birdsong, are detected on-device and delivered as visual and haptic alerts. Safety, and a little joy returned.",
+      items:[["bell","<b>Safety first.</b> Critical alerts like smoke alarms are tuned to never be missed, with a visible, felt ripple."],
+             ["bird","<b>The small joys back.</b> 'A lark is singing nearby', the sounds high-frequency loss takes first, returned to you."],
+             ["lock","<b>Private by design.</b> All listening is on-device; nothing is recorded, stored, or uploaded, and the mic state is always visible."]]}
+  };
+  function renderNotes(k){
+    const n=NOTES[k];
+    document.getElementById('n-eb').textContent=n.eb;
+    document.getElementById('n-title').textContent=n.t;
+    document.getElementById('n-lead').textContent=n.lead;
+    document.getElementById('n-list').innerHTML=n.items.map(it=>
+      `<li><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[it[0]]}</svg></span><span>${it[1]}</span></li>`).join('');
+  }
+  function go(v,btn){
+    document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
+    document.getElementById('view-'+v).classList.add('active');
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
+    if(btn&&btn.closest('.nav'))btn.classList.add('on');
+    else{const nb=document.querySelector('.nav [data-v='+v+']');if(nb)nb.classList.add('on');}
+    document.querySelectorAll('.jumprow button').forEach(b=>b.classList.remove('on'));
+    const jp=[...document.querySelectorAll('.jumprow button')].find(b=>b.textContent.toLowerCase()===v);
+    if(jp)jp.classList.add('on');
+    document.querySelector('.body').scrollTop=0;
+    renderNotes(v);
+  }
+  function toggleMic(){
+    const b=document.getElementById('micBtn');b.classList.toggle('on');
+    document.getElementById('micTxt').textContent=b.classList.contains('on')?'listening · on-device':'mic off';
+  }
+  function toggleBoost(s){s.classList.toggle('on');document.getElementById('eq').classList.toggle('boost',s.classList.contains('on'));}
+  function answer(el,correct){
+    const row=el.parentNode;[...row.children].forEach(c=>{c.classList.remove('correct','wrong');c.disabled=true;});
+    el.classList.add(correct?'correct':'wrong');
+    if(!correct){[...row.children].find(c=>c.textContent==='S').classList.add('correct');}
+    setTimeout(()=>{[...row.children].forEach(c=>{c.classList.remove('correct','wrong');c.disabled=false;});},1400);
+  }
+  renderNotes('hearing');
+</script>
